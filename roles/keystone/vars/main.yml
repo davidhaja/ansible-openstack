@@ -1,0 +1,8 @@
+---
+
+keystone_pkgs:
+          - keystone
+
+keystone_service: keystone
+memcached_conf_dir: "/etc/keystone/"
+

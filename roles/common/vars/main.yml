@@ -1,0 +1,6 @@
+---
+
+common_pkgs:
+          - software-properties-common
+          - python-openstackclient
+

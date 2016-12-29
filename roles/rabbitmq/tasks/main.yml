@@ -1,0 +1,12 @@
+---
+
+- name: Install the rabbitmq packages
+  become: yes
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items: rabbitmq_pkgs
+
+- name: add users
+  become: yes
+  rabbitmq_user: user={{item}} password={{rabbitmq_password}} vhost=/ configure_priv=.* write_priv=.* read_priv=.* state=present
+  with_items: rabbit_users
+  notify: restart rabbitmq
