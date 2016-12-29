@@ -2,16 +2,24 @@
 
 - name: Install the mysql packages
   become: yes
-  apt: name={{ item }} state=installed update_cache=yes
+  apt: 
+      name: "{{ item }}" 
+      state: "installed" 
+      update_cache: yes
   with_items: mysql_pkgs
 
 - name: Copy openstack specific config file 
   become: yes
-  template: src=openstack.j2 dest={{ mysql_conf_dir }}/99-openstack.cnf
+  template: 
+      src: "openstack.j2"
+      dest: "{{ mysql_conf_dir }}/99-openstack.cnf"
   notify: restart mysql
 
 - name: update mysql root password for all root accounts
-  mysql_user: name=root host={{ item }} password={{ mysql_root_db_pass }}
+  mysql_user: 
+      name: "root" 
+      host: "{{ item }}"
+      password: "{{ mysql_root_db_pass }}"
   with_items:
     - "{{ ansible_hostname }}"
     - 127.0.0.1
@@ -19,15 +27,23 @@
     - localhost
 
 - name: remove the test database
-  mysql_db: name=test state=absent
+  mysql_db: 
+      name: "test" 
+      state: "absent"
 
 - name: Create the database
-  mysql_db: name={{ item.name }} state=present
+  mysql_db: 
+      name: "{{ item.name }}" 
+      state: "present"
   with_items: mysql_db
 
 - name: Create the database users
-  mysql_user: name={{ item[0].name }}  password={{ item[0].pass|default("dbpass") }}  
-              priv={{ item[0].priv | default("*.*:ALL") }} state=present host={{ item[1] }}
+  mysql_user: 
+      name: "{{ item[0].name }}"
+      password: "{{ item[0].pass|default('dbpass') }}"
+      priv: "{{ item[0].priv | default('*.*:ALL') }}" 
+      state: "present" 
+      host: "{{ item[1] }}"
   with_nested: 
     - "{{ mysql_users }}"
     - ['localhost' , '%']

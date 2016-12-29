@@ -1,0 +1,10 @@
+---
+
+- name: Install the keystone packages
+  become: yes
+  apt: 
+      name: "{{ item }}"
+      state: "installed"
+      update_cache: yes
+  with_items: keystone_pkgs
+

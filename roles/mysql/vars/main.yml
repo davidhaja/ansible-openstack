@@ -7,3 +7,17 @@ mysql_pkgs:
 
 mysql_service: mysql
 mysql_conf_dir: "/etc/mysql/mysql.conf.d/"
+
+mysql_port: 3306
+mysql_bind_address: "0.0.0.0"
+mysql_root_db_pass: entertm1
+
+mysql_db: 
+      - name: keystone
+        replicate: no
+
+mysql_users:
+      - name: keystone
+        pass: keystonepassword
+        priv: "keystone.*:ALL"
+

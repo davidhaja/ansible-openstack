@@ -2,11 +2,14 @@
 
 - name: Install the memcached packages
   become: yes
-  apt: name={{ item }} state=installed update_cache=yes
+  apt: 
+    name: "{{ item }}" 
+    state: "installed" 
+    update_cache: yes
   with_items: memcached_pkgs
 
 - lineinfile:
   dest: "{{ memcached_conf_dir}}/memcached.conf"
-  regexp: '^-l 127.0.0.1'
-  line: '{{ ansible_enp0s8["ipv4"]"[address"] }}'
+  regexp: "^-l 127.0.0.1"
+  line: "{{ ansible_enp0s8['ipv4']['address']| default('0.0.0.0') }}"
   notify: restart memcached

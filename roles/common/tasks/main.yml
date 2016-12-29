@@ -2,12 +2,17 @@
 
 - name: Add OpenStack repository
   become: yes
-  apt_repository: repo="cloud-archive:newton"
+  apt_repository: 
+      repo: "cloud-archive:newton"
 
 
 - name: Install the common packages
   become: yes
-  apt: name={{ item }} state=installed update_cache=yes upgrade=dist
+  apt: 
+    name: "{{ item }}"
+    state: "installed"
+    update_cache: yes 
+    upgrade: "dist"
   with_items: common_pkgs
 
 
