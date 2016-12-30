@@ -1,0 +1,9 @@
+---
+
+- name: Install the apache2 packages
+  become: yes
+  apt: 
+    name: "{{ item }}" 
+    state: "installed" 
+    update_cache: yes
+  with_items: apache_pkgs

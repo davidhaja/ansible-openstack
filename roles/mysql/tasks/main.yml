@@ -39,9 +39,9 @@
 
 - name: Create the database users
   mysql_user: 
-      name: "{{ item[0].name }}"
+      name: "{{ item[0]['name'] }}"
       password: "{{ item[0].pass|default('dbpass') }}"
-      priv: "{{ item[0].priv | default('*.*:ALL') }}" 
+      priv: "{{ item[0].priv | default('{{ item[0].name }}.*:ALL') }}" 
       state: "present" 
       host: "{{ item[1] }}"
   with_nested: 

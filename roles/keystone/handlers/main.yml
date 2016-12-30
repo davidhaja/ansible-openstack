@@ -1,0 +1,13 @@
+---
+
+- name: restart keystone
+    service: 
+    name: "{{ keystone_service }}"
+    state: "restarted"
+
+- name: restart apache2
+  service: 
+  name: "{{ apache_service }}"
+  state: "restarted"
+
+

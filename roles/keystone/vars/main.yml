@@ -3,6 +3,18 @@
 keystone_pkgs:
           - keystone
 
-keystone_service: keystone
+keystone_service: "keystone"
 memcached_conf_dir: "/etc/keystone/"
+apache_service: "apache2"
+
+keystone_dbpass: "keystonedbpass"
+
+keystone_conf_default:
+    admin_token: "9359f4bbc9a744fdb6e6"
+    log_dir: "/var/log/keystone"
+keystone_conf_database:        
+    connection: "mysql+pymysql://keystone:{{ keystone_dbpass }}@controller/keystone"
+keystone_conf_token:        
+    expiration: 7200
+    provider: "fernet"
 

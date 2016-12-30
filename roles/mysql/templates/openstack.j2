@@ -1,8 +1,4 @@
 [mysqld]
-bind-address = {{ mysql_bind_address }}
-
-default-storage-engine = innodb
-innodb_file_per_table
-max_connections = 4096
-collation-server = utf8_general_ci
-character-set-server = utf8
+{% for option_name, option_value in mysqld_options.iteritems() %}
+option_name = option_value
+{% endfor %}

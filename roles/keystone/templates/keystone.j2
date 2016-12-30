@@ -1,0 +1,14 @@
+[DEFAULT]
+{% for option_name, option_value in keystone_conf_default.iteritems() %}
+option_name = option_value
+{% endfor %}
+
+[database]
+{% for option_name, option_value in keystone_conf_database.iteritems() %}
+option_name = option_value
+{% endfor $}
+
+[token]
+{% option_name, option_value in keystone_conf_token.iteritems() %}
+option_name = option_value
+{% endfor %}

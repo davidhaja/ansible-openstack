@@ -8,3 +8,21 @@
       update_cache: yes
   with_items: keystone_pkgs
 
+- name: Copy keystone config file 
+  become: yes
+  template: 
+      src: "keystone.j2"
+      dest: "{{ keystone_conf_dir }}/keystone.conf"
+  notify: restart keystone
+
+- name: Populate the identity service database
+  become: yes
+  shell: 'su -s /bin/sh -c "keystone-manage db_sync" keystone'
+
+- name: Initialize Fernet key repositories
+  become: yes
+  shell: 'keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone'
+
+- name: Credential setup
+  become: yes  
+  shell: 'keystone-manage credential_setup --keystone-user keystone --keystone-group keystone'
