@@ -1,13 +1,15 @@
 ---
+keystone_dbpass: "keystonedbpass"
+admin_pass: "adminpassword"
 
 keystone_pkgs:
           - keystone
 
 keystone_service: "keystone"
-memcached_conf_dir: "/etc/keystone/"
+keystone_conf_dir: "/etc/keystone/"
 apache_service: "apache2"
-
-keystone_dbpass: "keystonedbpass"
+apache_conf_dir: "/etc/apache2/"
+default_sqlite_db: "/var/lib/keystone/keystone.db"
 
 keystone_conf_default:
     admin_token: "9359f4bbc9a744fdb6e6"
@@ -18,3 +20,14 @@ keystone_conf_token:
     expiration: 7200
     provider: "fernet"
 
+apache_conf:
+    ServerName: "controller"
+
+admin_account_env:        
+    OS_USERNAME: "admin"
+    OS_PASSWORD: "{{ ADMIN_PASS }}"
+    OS_PROJECT_NAME: "admin"
+    OS_USER_DOMAIN_NAME: "default"
+    OS_PROJECT_DOMAIN_NAME: "default"
+    OS_AUTH_URL: "http://controller:35357/v3"
+    OS_IDENTITY_API_VERSION: 3

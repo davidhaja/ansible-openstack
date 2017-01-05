@@ -1,5 +1,7 @@
 ---
+#changeable
 
+#unchangeable
 memcached_pkgs:
       - memcached
       - python-memcache

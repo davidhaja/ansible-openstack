@@ -26,3 +26,29 @@
 - name: Credential setup
   become: yes  
   shell: 'keystone-manage credential_setup --keystone-user keystone --keystone-group keystone'
+
+- name: Bootstrap the identity service
+  become: yes
+  shell: 'keystone-manage bootstrap --bootstrap-password {{ admin_pass }} \
+          --bootstrap-admin-url http://controller:35357/v3/ \
+          --bootstrap-internal-url http://controller:35357/v3/ \
+          --bootstrap-public-url http://controller:5000/v3/ \
+          --bootstrap-region-id RegionOne'
+
+- name: Edit apache2 config
+  become: yes
+  template:
+      src: "apache.j2"
+      dest: "{{ apache_conf_dir }}/apache2.conf"
+  notify: restart apache2
+
+- name: Remove default SQLite database
+  become: yes
+  file:
+      path: "{{ default_sqlite_db }}"
+      state: absent
+
+- name: Create admin account environment file
+  template:
+      src: "admin.j2"
+      dest: "{{ ansible_env.HOME }}/adminrc"

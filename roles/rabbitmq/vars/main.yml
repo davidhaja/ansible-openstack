@@ -1,5 +1,7 @@
 ---
+#changeable
 
+#unchangeable
 rabbitmq_pkgs:
       - rabbitmq-server
 
