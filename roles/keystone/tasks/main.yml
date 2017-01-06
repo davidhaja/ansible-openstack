@@ -52,3 +52,84 @@
   template:
       src: "admin.j2"
       dest: "{{ ansible_env.HOME }}/adminrc"
+
+- name: Set the environment
+  shell: "source {{ ansible_env.HOME }}/adminrc"
+
+- name: Create service project
+  os_project:
+      state: present
+      name: "service"
+      description: "Service Project"
+      domain_id: "default"
+      enabled: True
+
+- name: Create demo project
+  os_project:
+      state: present
+      name: "demo"
+      description: "Demo Project"
+      domain_id: "default"
+      enabled: True
+
+- name: Create demo user
+  os_user:
+      state: present
+      name: "demo"
+      password: "{{ demo_password }}"
+      default_project: "demo"
+      domain: "default"
+      enabled: True
+
+- name: Create user role
+  shell: "openstack role create user"
+
+#- name: Add the user role to the demo project and user
+#  os_user_role:
+#      user: "demo"
+#      project: "demo"
+#      role: "user"
+#      state: present
+
+- name: Add the user role to the demo project and user
+  shell: "openstack role add --project demo --user demo user"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

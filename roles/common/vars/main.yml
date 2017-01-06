@@ -1,8 +1,7 @@
 ---
-#changeable
 
-#unchangeable
 common_pkgs:
           - software-properties-common
           - python-openstackclient
-
+hosts_options:
+          controller: "10.0.0.1"

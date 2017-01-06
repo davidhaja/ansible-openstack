@@ -16,6 +16,7 @@
   notify: restart mysql
 
 - name: update mysql root password for all root accounts
+  become: yes
   mysql_user: 
       name: "root" 
       host: "{{ item }}"
@@ -27,17 +28,20 @@
     - localhost
 
 - name: remove the test database
+  become: yes
   mysql_db: 
       name: "test" 
       state: "absent"
 
 - name: Create the database
+  become: yes
   mysql_db: 
       name: "{{ item.name }}" 
       state: "present"
   with_items: mysql_db
 
 - name: Create the database users
+  become: yes
   mysql_user: 
       name: "{{ item[0]['name'] }}"
       password: "{{ item[0].pass|default('dbpass') }}"

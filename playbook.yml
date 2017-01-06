@@ -3,4 +3,9 @@
 - hosts: controllers
   remote_user: ubuntu
   roles:
+    - {role: common}
     - {role: mysql}
+    - {role: apache}
+    - {role: memcached}
+    - {role: rabbitmq}
+    - {role: keystone}

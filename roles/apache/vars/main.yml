@@ -1,9 +1,7 @@
 ---
-#changeable
 
-#Unchangeable
 apache_pkgs:
       - apache2
 
 apache_service: apache2
-apache_conf_dir: "/etc/apache2/"
+apache_conf_dir: "/etc/apache2"

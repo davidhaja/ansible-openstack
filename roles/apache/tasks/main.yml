@@ -4,6 +4,6 @@
   become: yes
   apt: 
     name: "{{ item }}" 
-    state: "installed" 
+    state: "latest" 
     update_cache: yes
   with_items: apache_pkgs
