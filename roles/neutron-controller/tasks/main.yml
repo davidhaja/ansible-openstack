@@ -1,0 +1,113 @@
+---
+
+- name: Create neutron user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  os_user:
+      state: present
+      name: "neutron"
+      password: "{{ neutron_pass }}"
+      domain: "default"
+      enabled: True
+
+- name: Add the admin role to the neutron user and service project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack role add --project service --user neutron admin"
+
+- name: Create the neutron service entity
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  #os_keystone_service:
+  #    state: present
+  #    name: neutron
+  #    description: "OpenStack Networking"
+  #    service_type: "network"
+  shell: 'openstack service create --name neutron --description "OpenStack Networking" network'
+
+- name: Create the Networking service API endpoints
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack endpoint create --region RegionOne network public http://controller:9696; \
+          openstack endpoint create --region RegionOne network internal http://controller:9696; \
+          openstack endpoint create --region RegionOne network admin http://controller:9696;" 
+
+- name: Install neutron packages
+  become: yes
+  apt: 
+      name: "{{ item }}"
+      state: "latest"
+      update_cache: yes
+  with_items: neutron_pkgs
+
+- name: Change neutron config file
+  become: yes
+  template:
+      src: "neutron.j2"
+      dest: "{{ neutron_conf_dir }}/neutron.conf"
+
+- name: Change ml2 plugin conf file
+  become: yes
+  template:
+      src: "ml2.j2"
+      dest: "{{ ml2_plugin_conf_dir }}/ml2_conf.ini"
+
+- name: Change ml2 linuxbridge agent config file
+  become: yes
+  template:
+      src: "linuxbridge.j2"
+      dest: "{{ ml2_plugin_conf_dir }}/linuxbridge_agent.ini"
+
+- name: Change l3 agent config file
+  become: yes
+  template:
+      src: "l3agent.j2"
+      dest: "{{ neutron_conf_dir }}/l3_agent.ini"
+
+- name: Change dhcp agent config file
+  become: yes
+  template:
+      src: "dhcpagent.j2"
+      dest: "{{ neutron_conf_dir }}/dhcp_agent.ini"
+
+- name: Change metadata agent config file
+  become: yes
+  template:
+      src: "metadata.j2"
+      dest: "{{ neutron_conf_dir }}/metadata_agent.ini"
+
+- name: Populate the database neutron
+  become: yes
+  shell: 'su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf \
+          --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron'
+
+- name: Restart the Networking services
+  become: yes
+  service:
+      name: "{{ item}}"
+      state: "restarted"
+  with_items: neutron_services

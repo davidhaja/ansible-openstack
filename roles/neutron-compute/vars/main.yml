@@ -1,0 +1,46 @@
+---
+neutron_dbpass: "openstack"
+neutron_pass: "openstack"
+
+neutron_compute_pkgs:
+      - neutron-linuxbridge-agent 
+
+neutron_compute_services: 
+    - "nova-compute"
+    - "neutron-linuxbridge-agent"
+
+neutron_conf_dir: "/etc/neutron"
+rabbit_pass: "openstack"
+nova_pass: "openstack"
+ml2_plugin_conf_dir: "/etc/neutron/plugins/ml2"
+metadata_secret: "openstack"
+
+neutron_compute_conf:
+    DEFAULT:
+        core_plugin: "ml2"
+        transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
+        auth_strategy: "keystone"
+    keystone_authtoken:
+        auth_uri: "http://controller:5000"
+        auth_url: "http://controller:35357"
+        memcached_servers: "controller:11211"
+        auth_type: "password"
+        project_domain_name: "Default"
+        user_domain_name: "Default"
+        project_name: "service"
+        username: "neutron"
+        password: "{{ neutron_pass }}"
+    agent:
+        root_helper: "sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf"
+
+ml2_linuxbridge_agent_compute_conf:
+    linuxbridge:
+        physical_interface_mappings: "provider:enp0s3"
+    vxlan:
+        enable_vxlan: True
+        local_ip: "10.0.0.2"
+        l2_population: True
+    securitygroup:
+        enable_security_group: True
+        firewall_driver: "neutron.agent.linux.iptables_firewall.IptablesFirewallDriver"
+

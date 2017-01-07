@@ -1,0 +1,6 @@
+{% for section, section_value in ml2_neutron_plugin_conf.iteritems() %}
+[{{ section }}]
+{% for option_name, option_value in section_value.iteritems() %}
+{{ option_name }} = {{ option_value }}
+{% endfor %}
+{% endfor %}
