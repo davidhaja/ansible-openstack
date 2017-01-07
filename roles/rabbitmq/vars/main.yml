@@ -3,7 +3,7 @@
 rabbitmq_pkgs:
       - rabbitmq-server
 
-rabbitmq_service: rabbitmq-server
+rabbitmq_service: "rabbitmq-server"
 rabbitmq_conf_dir: "/etc/rabbitmq"
-rabbitmq_password: rabbitpass
-rabbit_users: openstack
+rabbitmq_password: "openstack"
+rabbit_users: "openstack"

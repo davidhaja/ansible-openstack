@@ -1,5 +1,5 @@
 127.0.0.1 localhost
 {% for name, ip in hosts_options.iteritems() %}
-ip name
+{{ ip }} {{ name }}
 {% endfor %}
 

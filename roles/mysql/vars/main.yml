@@ -6,20 +6,36 @@ mysql_pkgs:
       - python-mysqldb
 
 mysql_service: mysql
-mysql_conf_dir: "/etc/mysql/mysql.conf.d"
+mysql_conf_dir: "/etc/mysql"
+openstack_mysql_conf_dir: "/etc/mysql/conf.d"
 
 mysql_port: 3306
-mysql_bind_address: "0.0.0.0"
-mysql_root_db_pass: entertm1
+mysql_bind_address: "10.0.0.1"
+mysql_root_db_pass: "openstack"
 
 mysql_db: 
-      - name: keystone
-        replicate: no
+      - name: "keystone"
+      - name: "glance"
+      - name: "nova"
+      - name: "nova_api" 
+      - name: "neutron"
 
 mysql_users:
-      - name: keystone
-        pass: keystonepassword
+      - name: "keystone"
+        pass: "openstack"
         priv: "keystone.*:ALL"
+      - name: "glance"
+        pass: "openstack"
+        priv: "glance.*:ALL"
+      - name: "nova"
+        pass: "openstack"
+        priv: "nova.*:ALL"
+      - name: "nova"
+        pass: "openstack"
+        priv: "nova_api.*:ALL"
+      - name: "neutron"
+        pass: "openstack"
+        priv: "neutron.*:ALL"
 
 mysqld_options:
       bind-address: "{{ mysql_bind_address }}"

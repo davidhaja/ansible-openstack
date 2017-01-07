@@ -1,4 +1,4 @@
-{% for section, section_value in config.iteritems() %}
+{% for section, section_value in glance_conf_api.iteritems() %}
 [{{ section }}]
 {% for option_name, option_value in section_value.iteritems() %}
 {{ option_name }} = {{ option_value }}

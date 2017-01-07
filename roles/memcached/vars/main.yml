@@ -4,5 +4,5 @@ memcached_pkgs:
       - memcached
       - python-memcache
 
-memcached_service: memcached
+memcached_service: "memcached"
 memcached_conf_dir: "/etc"

@@ -13,11 +13,13 @@
   template: 
       src: "keystone.j2"
       dest: "{{ keystone_conf_dir }}/keystone.conf"
-  notify: restart keystone
+  #notify: restart keystone
 
 - name: Populate the identity service database
   become: yes
+  #become_user: "keystone"
   shell: 'su -s /bin/sh -c "keystone-manage db_sync" keystone'
+  #shell: "keystone-manage db_sync"
 
 - name: Initialize Fernet key repositories
   become: yes
@@ -29,18 +31,21 @@
 
 - name: Bootstrap the identity service
   become: yes
-  shell: 'keystone-manage bootstrap --bootstrap-password {{ admin_pass }} \
-          --bootstrap-admin-url http://controller:35357/v3/ \
-          --bootstrap-internal-url http://controller:35357/v3/ \
-          --bootstrap-public-url http://controller:5000/v3/ \
-          --bootstrap-region-id RegionOne'
+  shell: 'keystone-manage bootstrap --bootstrap-password {{ admin_pass }} --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:35357/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne'
 
 - name: Edit apache2 config
   become: yes
-  template:
-      src: "apache.j2"
+  lineinfile:
       dest: "{{ apache_conf_dir }}/apache2.conf"
-  notify: restart apache2
+      regexp: "^ServerName"
+      line: "ServerName controller"
+  #notify: restart apache2
+
+- name: Restart apache2
+  become: yes
+  service:
+      name: "apache2"
+      state: "restarted"
 
 - name: Remove default SQLite database
   become: yes
@@ -53,10 +58,18 @@
       src: "admin.j2"
       dest: "{{ ansible_env.HOME }}/adminrc"
 
-- name: Set the environment
-  shell: "source {{ ansible_env.HOME }}/adminrc"
+#- name: Set the environment
+#  shell: "source {{ ansible_env.HOME }}/adminrc"
 
 - name: Create service project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
   os_project:
       state: present
       name: "service"
@@ -65,6 +78,14 @@
       enabled: True
 
 - name: Create demo project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
   os_project:
       state: present
       name: "demo"
@@ -73,6 +94,14 @@
       enabled: True
 
 - name: Create demo user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
   os_user:
       state: present
       name: "demo"
@@ -82,6 +111,14 @@
       enabled: True
 
 - name: Create user role
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
   shell: "openstack role create user"
 
 #- name: Add the user role to the demo project and user
@@ -92,6 +129,14 @@
 #      state: present
 
 - name: Add the user role to the demo project and user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
   shell: "openstack role add --project demo --user demo user"
 
 

@@ -11,12 +11,12 @@ apache_service: "apache2"
 apache_conf_dir: "/etc/apache2"
 default_sqlite_db: "/var/lib/keystone/keystone.db"
 
-keystone_conf_default:
-    admin_token: "9359f4bbc9a744fdb6e6"
+config:
+  DEFAULT:
     log_dir: "/var/log/keystone"
-keystone_conf_database:        
+  database:        
     connection: "mysql+pymysql://keystone:{{ keystone_dbpass }}@controller/keystone"
-keystone_conf_token:        
+  token:        
     expiration: 7200
     provider: "fernet"
 
@@ -25,11 +25,12 @@ apache_conf:
 
 admin_account_env:        
     OS_USERNAME: "admin"
-    OS_PASSWORD: "{{ ADMIN_PASS }}"
+    OS_PASSWORD: "{{ admin_pass }}"
     OS_PROJECT_NAME: "admin"
-    OS_USER_DOMAIN_NAME: "default"
-    OS_PROJECT_DOMAIN_NAME: "default"
+    OS_USER_DOMAIN_NAME: "Default"
+    OS_PROJECT_DOMAIN_NAME: "Default"
     OS_AUTH_URL: "http://controller:35357/v3"
     OS_IDENTITY_API_VERSION: 3
+    OS_IMAGE_API_VERSION: 2
 
 demo_password: "openstack"

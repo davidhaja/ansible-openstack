@@ -17,6 +17,11 @@
 #      upgrade: "dist"
   with_items: common_pkgs
 
+- name: Install shade with pip
+  become: yes
+  pip:
+      name: shade
+
 - name: Change hosts file
   become: yes
   template:

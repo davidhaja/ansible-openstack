@@ -1,0 +1,21 @@
+---
+
+- name: Install nova compute packages
+  become: yes
+  apt:
+      name: "{{ item }}"
+      state: "latest"
+      update_cache: yes
+  with_items: nova_compute_pkgs
+
+- name: Edit the nova config file
+  become: yes
+  template:
+      src: "nova-compute.j2"
+      dest: "{{ nova_conf_dir }}/nova.conf"
+
+- name: Restart nova compute service
+  service:
+      name: "{{ item }}"
+      state: "restarted"
+  with_items: nova_compute_service

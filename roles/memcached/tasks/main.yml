@@ -8,10 +8,16 @@
       update_cache: yes
   with_items: memcached_pkgs
 
-- name: Change memchached conf
+- name: Change memcached conf
   become: yes
   lineinfile:
       dest: "{{ memcached_conf_dir}}/memcached.conf"
       regexp: "^-l 127.0.0.1"
-      line: "{{ ansible_enp0s8['ipv4']['address']| default('0.0.0.0') }}"
-  notify: restart memcached
+      line: "{{ ansible_enp0s8['ipv4']['address']| default('10.0.0.1') }}"
+  #notify: restart memcached
+
+- name: Restart memcached service
+  become: yes
+  service:
+      name: "memcached"
+      state: "restarted"

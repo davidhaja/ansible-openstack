@@ -1,0 +1,73 @@
+---
+
+- name: Create neutron user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  os_user:
+      state: present
+      name: "neutron"
+      password: "{{ neutron_pass }}"
+      domain: "default"
+      enabled: True
+
+- name: Add the admin role to the neutron user and service project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack role add --project service --user neutron admin"
+
+- name: Create the neutron service entity
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  #os_keystone_service:
+  #    state: present
+  #    name: neutron
+  #    description: "OpenStack Networking"
+  #    service_type: "network"
+  shell: 'openstack service create --name neutron --description "OpenStack Networking" network'
+
+- name: Create the Networking service API endpoints
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack endpoint create --region RegionOne network public http://controller:9696; \
+          openstack endpoint create --region RegionOne network internal http://controller:9696; \
+          openstack endpoint create --region RegionOne network admin http://controller:9696;" 
+
+- name: Install neutron packages
+  become: yes
+  apt: 
+      name: "{{ item }}"
+      state: "latest"
+      update_cache: yes
+  with_items: neutron_pkgs
+
+
+- name: Restart the Networking services
+  become: yes
+  service:
+      name: "{{ item}}"
+      state: "restarted"
+  with_items: neutron_services

@@ -3,5 +3,7 @@
 common_pkgs:
           - software-properties-common
           - python-openstackclient
+          - python-pip
 hosts_options:
           controller: "10.0.0.1"
+          compute1: "10.0.0.2"

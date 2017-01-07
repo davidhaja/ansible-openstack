@@ -1,0 +1,78 @@
+---
+
+- name: Create nova user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  os_user:
+      state: present
+      name: "nova"
+      password: "{{ nova_pass }}"
+      domain: "default"
+      enabled: True
+
+- name: Add the admin role to the nova user and service project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack role add --project service --user nova admin"
+
+- name: Create the nova service entity
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: 'openstack service create --name nova --description "OpenStack Compute" compute'
+
+- name: Create the Compute service API endpoints
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack endpoint create --region RegionOne compute public http://controller:8774/v2.1/%\\(tenant_id\\)s; \ 
+          openstack endpoint create --region RegionOne compute internal http://controller:8774/v2.1/%\\(tenant_id\\)s; \ 
+          openstack endpoint create --region RegionOne compute admin http://controller:8774/v2.1/%\\(tenant_id\\)s;"
+
+- name: Install nova packages
+  become: yes
+  apt:
+      name: "{{ item }}"
+      state: "latest"
+      update_cache: yes
+  with_items: nova_controller_pkgs
+
+- name: Edit the nova config file
+  become: yes
+  template:
+      src: "nova.j2"
+      dest: "{{ nova_conf_dir }}/nova.conf"
+
+- name: Populate the Compute databases
+  become: yes
+  shell: 'su -s /bin/sh -c "nova-manage api_db sync" nova; \ 
+          su -s /bin/sh -c "nova-manage db sync" nova; '
+
+- name: Restart nova services
+  become: yes
+  service:
+      name: "{{ item }}"
+      state: "restarted"
+  with_items: nova_services  

@@ -9,3 +9,12 @@
     - {role: memcached}
     - {role: rabbitmq}
     - {role: keystone}
+    - {role: glance}
+    - {role: nova-controller}
+    - {role: neutron}
+
+- hosts: computes
+  remote_user: ubuntu
+  roles:
+      - {role: common}
+      - {role: nova-compute}

@@ -12,8 +12,21 @@
   become: yes
   template: 
       src: "openstack.j2"
-      dest: "{{ mysql_conf_dir }}/99-openstack.cnf"
-  notify: restart mysql
+      dest: "{{ openstack_mysql_conf_dir }}/openstack.cnf"
+  #notify: restart mysql
+
+- name: Comment out bind address
+  become: yes
+  replace:
+      dest: "{{ mysql_conf_dir }}/mysql.conf.d/mysqld.cnf"
+      regexp: "^bind-address"
+      replace: "#bind-address =127.0.0.1"
+
+- name: Restart mysql
+  become: yes
+  service:
+      name: "mysql"
+      state: "restarted"
 
 - name: update mysql root password for all root accounts
   become: yes
@@ -44,10 +57,11 @@
   become: yes
   mysql_user: 
       name: "{{ item[0]['name'] }}"
-      password: "{{ item[0].pass|default('dbpass') }}"
+      password: "{{ item[0].pass| default('dbpass') }}"
       priv: "{{ item[0].priv | default('{{ item[0].name }}.*:ALL') }}" 
       state: "present" 
       host: "{{ item[1] }}"
+      append_privs: "yes"
   with_nested: 
     - "{{ mysql_users }}"
     - ['localhost' , '%']

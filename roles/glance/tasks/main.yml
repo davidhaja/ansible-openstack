@@ -1,0 +1,88 @@
+---
+
+- name: Create glance user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  os_user:
+      state: present
+      name: "glance"
+      password: "{{ glance_pass }}"
+      domain: "default"
+      enabled: True
+
+- name: Add the admin role to the glance user and service project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack role add --project service --user glance admin"
+
+- name: Create the glance service entity
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  #os_keystone_service:
+  #    state: present
+  #    name: glance
+  #    description: "OpenStack Image"
+  #    service_type: "image"
+  shell: 'openstack service create --name glance --description "OpenStack Image" image'
+
+- name: Create the Image service API endpoints
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack endpoint create --region RegionOne image public http://controller:9292; \ 
+          openstack endpoint create --region RegionOne image internal http://controller:9292; \ 
+          openstack endpoint create --region RegionOne image admin http://controller:9292; \ "
+
+- name: Install glance packages
+  become: yes
+  apt: 
+      name: "{{ item }}"
+      state: "latest"
+      update_cache: yes
+  with_items: glance_pkgs
+
+- name: Change glance-api config file
+  become: yes
+  template:
+      src: "glance-api.j2"
+      dest: "{{ glance_conf_dir }}/glance-api.conf"
+
+- name: Change glance-registry config file
+  become: yes
+  template:
+      src: "glance-registry.j2"
+      dest: "{{ glance_conf_dir }}/glance-registry.conf"
+
+- name: Populate the Image service database
+  become: yes
+  shell: 'su -s /bin/sh -c "glance-manage db_sync" glance'
+
+- name: Restart the Image services
+  become: yes
+  service:
+      name: "{{ item}}"
+      state: "restarted"
+  with_items: glance_services

@@ -1,0 +1,45 @@
+---
+neutron_dbpass: "openstack"
+neutron_pass: "openstack"
+
+neutron_pkgs:
+      - neutron-server 
+      - neutron-plugin-ml2
+      - neutron-linuxbridge-agent 
+      - neutron-l3-agent 
+      - neutron-dhcp-agent
+      - neutron-metadata-agent
+
+neutron_services: 
+    - "nova-api"
+    - "neutron-server"
+    - "neutron-linuxbridge-agent"
+    - "neutron-dhcp-agent"
+    - "neutron-metadata-agent"
+    - "neutron-l3-agent"
+
+neutron_conf_dir: "/etc/neutron"
+
+neutron_conf:
+    database:
+        connection: "mysql+pymysql://glance:{{ glance_dbpass }}@controller/glance"
+        backend: "sqlalchemy"
+    image_format:
+        disk_formats: "ami,ari,aki,vhd,vhdx,vmdk,raw,qcow2,vdi,iso,root-tar"
+    keystone_authtoken:
+        auth_uri: "http://controller:5000"
+        auth_url: "http://controller:35357"
+        memcached_servers: "controller:11211"
+        auth_type: "password"
+        project_domain_name: "Default"
+        user_domain_name: "Default"
+        project_name: "service"
+        username: "glance"
+        password: "{{ glance_pass }}"
+    paste_deploy:
+        flavor: "keystone"
+    glance_store:
+        stores: "file,http"
+        default_store: "file"
+        filesystem_store_datadir: "var/lib/glance/images/"
+

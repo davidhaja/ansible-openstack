@@ -1,4 +1,4 @@
 {% for option_name, option_value in admin_account_env.iteritems() %}
-option_name=option_value
+export {{ option_name }}={{ option_value }}
 {% endfor %}
 
