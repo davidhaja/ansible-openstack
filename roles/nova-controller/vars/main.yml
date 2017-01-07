@@ -18,6 +18,9 @@ nova_services:
 
 nova_conf_dir: "/etc/nova"
 
+neutron_pass: "openstack"
+metadata_secret: "openstack"
+
 nova_conf:
     DEFAULT:
         transport_url: "rabbit://openstack:openstack@controller"
@@ -57,4 +60,15 @@ nova_conf:
         use_virtio_for_bridges: True
     wsgi:
         api_paste_config: "/etc/nova/api-paste.ini"
-
+    neutron:
+        url: "http://controller:9696"
+        auth_url: "http://controller:35357"
+        auth_type: "password"
+        project_domain_name: "Default"
+        user_domain_name: "Default"
+        region_name: "RegionOne"
+        project_name: "service"
+        username: "neutron"
+        password: "{{ neutron_pass }}"
+        service_metadata_proxy: True
+        metadata_proxy_shared_secret: "{{ metadata_secret }}"

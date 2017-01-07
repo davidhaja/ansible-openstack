@@ -10,6 +10,8 @@ nova_compute_service:
 
 nova_conf_dir: "/etc/nova"
 
+neutron_pass: "openstack"
+
 nova_compute_conf:
     DEFAULT:
         transport_url: "rabbit://openstack:openstack@controller"
@@ -51,3 +53,13 @@ nova_compute_conf:
         connection: "connection=sqlite:////var/lib/nova/nova.sqlite"
     api_database:
         connection: "connection=sqlite:////var/lib/nova/nova.sqlite"
+    neutron:
+        url: "http://controller:9696"
+        auth_url: "http://controller:35357"
+        auth_type: "password"
+        project_domain_name: "Default"
+        user_domain_name: "Default"
+        region_name: "RegionOne"
+        project_name: "service"
+        username: "neutron"
+        password: "{{ neutron_pass }}"
