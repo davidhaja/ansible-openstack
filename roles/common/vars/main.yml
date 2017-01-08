@@ -5,5 +5,5 @@ common_pkgs:
           - python-openstackclient
           - python-pip
 hosts_options:
-          controller: "10.0.0.1"
-          compute1: "10.0.0.2"
+          controller: "{{ ansible_enp0s8['ipv4']['address']| default('10.0.0.1') }}"
+          compute1: "{{ ansible_enp0s8['ipv4']['address']| default('10.0.0.2') }}"

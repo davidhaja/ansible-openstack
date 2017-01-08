@@ -18,7 +18,7 @@ cinder_controller_conf:
     DEFAULT:
         transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
         auth_strategy: "keystone"
-        my_ip: "10.0.0.1"
+        my_ip: "{{ ansible_enp0s8['ipv4']['address']| default('10.0.0.1') }}"
         rootwrap_config: "/etc/cinder/rootwrap.conf"
         api_paste_confg: "/etc/cinder/api-paste.ini"
         iscsi_helper: "tgtadm"
