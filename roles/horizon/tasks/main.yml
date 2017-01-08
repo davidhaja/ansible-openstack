@@ -1,0 +1,74 @@
+---
+
+- name: Install horizon packages
+  become: yes
+  apt:
+      name: "{{ item }}"
+      state: "latest"
+  with_items: horizon_pkgs
+
+- name: Configure the dashboard to use controller instead localhost
+  become: yes
+  replace:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      regexp: "127.0.0.1"
+      replace: "controller"
+
+- name: Allow all hosts to access the dashboard
+  become: yes
+  replace:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      regexp: "^ALLOWED_HOSTS = '*'"
+      replace: "ALLOWED_HOSTS = \"['*', ]\""
+
+- name: Configure the memcached session storage service
+  become: yes
+  lineinfile:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      line: "SESSION_ENGINE = 'django.contrib.sessions.backends.cache'"
+
+- name: Enable the Identity API v3
+  become: yes
+  replace:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      regexp: "v2.0"
+      replace: "v3"
+
+- name: Configure API versions
+  become: yes
+  lineinfile:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      line: 'OPENSTACK_API_VERSIONS = { "identity": 3, "image": 2, "volume": 2, }'  
+
+- name: Enable support for domains
+  become: yes
+  lineinfile:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      line: 'OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True'   
+
+- name: Configure default as the default domain for users that you create via the dashboard
+  become: yes
+  lineinfile:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      line: 'OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = "default"'   
+          
+- name: Configure user as the default role for users that you create via the dashboard
+  become: yes
+  replace:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      regexp: '^OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"'
+      replace: 'OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"'
+- name: Change TIME ZONE
+  become: yes
+  replace:
+      dest: "{{ horizon_conf_dir }}/local_settings.py"
+      regexp: '^TIME_ZONE = "UTC"'
+      replace: 'TIME_ZONE = "CET"'
+
+- name: Reload apache service
+  become: yes
+  service:
+      name: "{{ apache_service }}"  
+      state: "reloaded"
+
+          

@@ -19,6 +19,7 @@ mysql_db:
       - name: "nova"
       - name: "nova_api" 
       - name: "neutron"
+      - name: "cinder"
 
 mysql_users:
       - name: "keystone"
@@ -36,6 +37,9 @@ mysql_users:
       - name: "neutron"
         pass: "openstack"
         priv: "neutron.*:ALL"
+      - name: "cinder"
+        pass: "openstack"
+        priv: "cinder.*:ALL"
 
 mysqld_options:
       bind-address: "{{ mysql_bind_address }}"

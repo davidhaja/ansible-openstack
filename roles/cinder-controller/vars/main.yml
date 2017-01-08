@@ -1,0 +1,44 @@
+---
+cinder_dbpass: "openstack"
+cinder_pass: "openstack"
+
+cinder_controller_pkgs:
+      - cinder-api
+      - cinder-scheduler
+
+cinder_controller_services: 
+    - "nova-api"
+    - "cinder-scheduler"
+    - "cinder-api"
+
+cinder_conf_dir: "/etc/cinder"
+rabbit_pass: "openstack"
+
+cinder_controller_conf:
+    DEFAULT:
+        transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
+        auth_strategy: "keystone"
+        my_ip: "10.0.0.1"
+        rootwrap_config: "/etc/cinder/rootwrap.conf"
+        api_paste_confg: "/etc/cinder/api-paste.ini"
+        iscsi_helper: "tgtadm"
+        volume_name_template: "volume-%s"
+        volume_group: "cinder-volumes"
+        verbose: True
+        state_path: "/var/lib/cinder"
+        lock_path: "/var/lock/cinder"
+        volumes_dir: "/var/lib/cinder/volumes"
+    database:
+        connection: "mysql+pymysql://cinder:{{ cinder_dbpass }}@controller/cinder"
+    keystone_authtoken:
+        auth_uri: "http://controller:5000"
+        auth_url: "http://controller:35357"
+        memcached_servers: "controller:11211"
+        auth_type: "password"
+        project_domain_name: "Default"
+        user_domain_name: "Default"
+        project_name: "service"
+        username: "cinder"
+        password: "{{ cinder_pass }}"
+    oslo_concurency:
+        lock_path: "/var/lib/cinder/tmp"

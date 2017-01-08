@@ -1,0 +1,33 @@
+---
+
+- name: Install cinder packages to compute
+  become: yes
+  apt: 
+      name: "{{ item }}"
+      state: "latest"
+      update_cache: yes
+  with_items: cinder_compute_pkgs
+
+- name: Change cinder config file on compute node
+  become: yes
+  template:
+      src: "cinder-compute.j2"
+      dest: "{{ cinder_conf_dir }}/cinder.conf"
+
+- name: Modify lvm config file
+  become: yes
+  replace:
+      dest: "/etc/lvm/lvm.conf"
+      regexp: '# filter = [ "a|.*/|" ]'  
+      replace: 'filter = [ "a|.*/|" ]'
+
+- name: Rename old volume group name
+  become: yes
+  shell: "vgrename {{old_vg_name}} cinder-volumes"
+
+- name: Restart the cinder services on compute node
+  become: yes
+  service:
+      name: "{{ item}}"
+      state: "restarted"
+  with_items: cinder_compute_services

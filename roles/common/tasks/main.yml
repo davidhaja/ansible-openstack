@@ -8,6 +8,12 @@
 #      state: present
 
 
+- name: Apt distupgrade
+  become: yes
+  apt:
+      upgrade: dist
+      update_cache: yes
+
 - name: Install the common packages
   become: yes
   apt: 

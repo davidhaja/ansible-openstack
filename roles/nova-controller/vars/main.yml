@@ -72,3 +72,5 @@ nova_conf:
         password: "{{ neutron_pass }}"
         service_metadata_proxy: True
         metadata_proxy_shared_secret: "{{ metadata_secret }}"
+    cinder:
+        os_region_name: "RegionOne"

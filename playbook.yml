@@ -12,6 +12,8 @@
     - {role: glance}
     - {role: nova-controller}
     - {role: neutron-controller}
+    - {role: cinder-controller}
+    - {role: horizon}
 
 - hosts: computes
   remote_user: ubuntu
@@ -19,3 +21,4 @@
       - {role: common}
       - {role: nova-compute}
       - {role: neutron-compute}
+      - {role: cinder-compute}

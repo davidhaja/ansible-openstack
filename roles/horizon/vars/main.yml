@@ -1,0 +1,8 @@
+---
+
+horizon_pkgs:
+    - openstack-dashboard
+
+horizon_conf_dir: "/etc/openstack-dashboard"
+
+apache_service: "apache2"

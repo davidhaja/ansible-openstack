@@ -15,6 +15,7 @@
       dest: "{{ nova_conf_dir }}/nova.conf"
 
 - name: Restart nova compute service
+  become: yes
   service:
       name: "{{ item }}"
       state: "restarted"
