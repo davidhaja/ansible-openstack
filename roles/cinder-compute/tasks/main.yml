@@ -21,9 +21,9 @@
       regexp: '# filter = [ "a|.*/|" ]'  
       replace: 'filter = [ "a|.*/|" ]'
 
-- name: Rename old volume group name
-  become: yes
-  shell: "vgrename {{old_vg_name}} cinder-volumes"
+#- name: Rename old volume group name
+#  become: yes
+#  shell: "vgrename {{old_vg_name}} cinder-volumes"
 
 - name: Restart the cinder services on compute node
   become: yes

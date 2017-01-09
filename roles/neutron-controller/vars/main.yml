@@ -72,10 +72,10 @@ ml2_neutron_plugin_conf:
 
 ml2_linuxbridge_agent_conf:
     linuxbridge:
-        physical_interface_mappings: "provider:enp0s3"
+        physical_interface_mappings: "provider:eno3"
     vxlan:
         enable_vxlan: True
-        local_ip: "{{ ansible_enp0s8['ipv4']['address']| default('10.0.0.1') }}"
+        local_ip: "{{ ansible_eno2['ipv4']['address']| default('10.0.0.1') }}"
         l2_population: True
     securitygroup:
         enable_security_group: True

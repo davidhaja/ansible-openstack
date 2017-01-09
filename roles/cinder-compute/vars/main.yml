@@ -18,7 +18,7 @@ cinder_compute_conf:
     DEFAULT:
         transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
         auth_strategy: "keystone"
-        my_ip: "{{ ansible_enp0s8['ipv4']['address'] }}"
+        my_ip: "{{ ansible_eno2['ipv4']['address'] }}"
         enabled_backends: "lvm"
         glance_api_servers: "http://controller:9292"
         rootwrap_config: "/etc/cinder/rootwrap.conf"
