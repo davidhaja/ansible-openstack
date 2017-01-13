@@ -16,10 +16,10 @@
 
 - name: Allow all hosts to access the dashboard
   become: yes
-  replace:
+  lineinfile:
       dest: "{{ horizon_conf_dir }}/local_settings.py"
       regexp: "^ALLOWED_HOSTS = '*'"
-      replace: "ALLOWED_HOSTS = \"['*', ]\""
+      line: "ALLOWED_HOSTS = \"['*', ]\""
 
 - name: Configure the memcached session storage service
   become: yes
@@ -58,6 +58,7 @@
       dest: "{{ horizon_conf_dir }}/local_settings.py"
       regexp: '^OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"'
       replace: 'OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"'
+
 - name: Change TIME ZONE
   become: yes
   replace:
@@ -70,5 +71,4 @@
   service:
       name: "{{ apache_service }}"  
       state: "reloaded"
-
           

@@ -1,7 +1,7 @@
 ---
 glance_dbpass: "openstack"
 glance_pass: "openstack"
-
+admin_pass: "openstack"
 glance_pkgs:
       - glance
 

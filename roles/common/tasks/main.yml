@@ -1,5 +1,12 @@
 ---
 
+- name: Enable SSH password authentication
+  become: yes
+  replace:
+      dest: "/etc/ssh/sshd_config"
+      regexp: "^PasswordAuthentication no"
+      replace: "PasswordAuthentication yes"
+
 - name: Add OpenStack repository
   become: yes
   shell: "add-apt-repository -y cloud-archive:newton"

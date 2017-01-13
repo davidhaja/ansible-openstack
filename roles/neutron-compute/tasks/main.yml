@@ -14,11 +14,33 @@
       src: "neutron-compute.j2"
       dest: "{{ neutron_conf_dir }}/neutron.conf"
 
-- name: Change ml2 linuxbridge agent config file on compute node
+#- name: Change ml2 linuxbridge agent config file on compute node
+#  become: yes
+#  template:
+#      src: "linuxbridge-compute.j2"
+#      dest: "{{ ml2_plugin_conf_dir }}/linuxbridge_agent.ini"
+
+- name: Change ml2 ovs agent config file on compute node
   become: yes
   template:
-      src: "linuxbridge-compute.j2"
-      dest: "{{ ml2_plugin_conf_dir }}/linuxbridge_agent.ini"
+      src: "ovs-compute.j2"
+      dest: "{{ ml2_plugin_conf_dir }}/openvswitch_agent.ini"
+
+- name: Add br-int to compute node
+  become: yes
+  openvswitch_bridge:
+      bridge: "br-int"
+      state: "present"
+
+- name: Add br-tun to compute node
+  become: yes
+  openvswitch_bridge:
+      bridge: "br-tun"
+      state: "present"
+
+- name: Enalbe OVS interfaces on compute node
+  become: yes
+  shell: "ifconfig br-int up;ifconfig br-tun up;"
 
 - name: Restart the Networking services on compute node
   become: yes

@@ -76,11 +76,17 @@
       src: "ml2.j2"
       dest: "{{ ml2_plugin_conf_dir }}/ml2_conf.ini"
 
-- name: Change ml2 linuxbridge agent config file
+#- name: Change ml2 linuxbridge agent config file
+#  become: yes
+#  template:
+#      src: "linuxbridge.j2"
+#      dest: "{{ ml2_plugin_conf_dir }}/linuxbridge_agent.ini"
+
+- name: Change open vswitch agent config file
   become: yes
   template:
-      src: "linuxbridge.j2"
-      dest: "{{ ml2_plugin_conf_dir }}/linuxbridge_agent.ini"
+      src: "ovs.j2"
+      dest: "{{ ml2_plugin_conf_dir }}/openvswitch_agent.ini"
 
 - name: Change l3 agent config file
   become: yes
@@ -103,6 +109,36 @@
 - name: Populate the database neutron
   become: yes
   shell: 'su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron'
+
+- name: Add br-int to controller
+  become: yes
+  openvswitch_bridge:
+      bridge: "br-int"
+      state: "present"
+
+- name: Add br-tun to controller
+  become: yes
+  openvswitch_bridge:
+      bridge: "br-tun"
+      state: "present"
+
+- name: Add br-ex to controller
+  become: yes
+  openvswitch_bridge:
+      bridge: "br-ex"
+      state: "present"
+      #port: "eno3"
+
+- name: Enable OVS interfaces
+  become: yes
+  shell: "ifconfig br-ex up;ifconfig br-tun up;ifconfig br-int up;"
+
+- name: Add public interface to br-ex
+  become: yes
+  #for lendulet
+  shell: "ovs-vsctl add-port br-ex eno3"
+  # for taska
+  # shell: "ovs-vsctl add-port br-ex eno1"
 
 - name: Restart the Networking services
   become: yes

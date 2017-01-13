@@ -3,16 +3,16 @@
 - hosts: controllers
   remote_user: ubuntu
   roles:
-    - {role: common}
-    - {role: mysql}
-    - {role: apache}
-    - {role: memcached}
-    - {role: rabbitmq}
-    - {role: keystone}
+#    - {role: common}
+#    - {role: mysql}
+#    - {role: apache}
+#    - {role: memcached}
+#    - {role: rabbitmq}
+#    - {role: keystone}
     - {role: glance}
     - {role: nova-controller}
     - {role: neutron-controller}
-    - {role: cinder-controller}
+#    - {role: cinder-controller}
     - {role: horizon}
 
 - hosts: computes
@@ -21,4 +21,4 @@
       - {role: common}
       - {role: nova-compute}
       - {role: neutron-compute}
-      - {role: cinder-compute}
+#      - {role: cinder-compute}
