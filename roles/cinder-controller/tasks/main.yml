@@ -10,7 +10,7 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   os_user:
-      state: present
+      state: "present"
       name: "cinder"
       password: "{{ cinder_pass }}"
       domain: "default"
@@ -82,7 +82,7 @@
       name: "{{ item }}"
       state: "latest"
       update_cache: yes
-  with_items: cinder_controller_pkgs
+  with_items: "{{ cinder_controller_pkgs }}"
 
 - name: Change cinder config file on controller node
   become: yes
@@ -99,4 +99,4 @@
   service:
       name: "{{ item}}"
       state: "restarted"
-  with_items: cinder_controller_services
+  with_items: "{{ cinder_controller_services }}"

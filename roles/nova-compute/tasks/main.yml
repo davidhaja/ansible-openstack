@@ -6,7 +6,7 @@
       name: "{{ item }}"
       state: "latest"
       update_cache: yes
-  with_items: nova_compute_pkgs
+  with_items: "{{ nova_compute_pkgs }}"
 
 - name: Edit the nova config file
   become: yes
@@ -19,4 +19,4 @@
   service:
       name: "{{ item }}"
       state: "restarted"
-  with_items: nova_compute_service
+  with_items: "{{ nova_compute_service }}"

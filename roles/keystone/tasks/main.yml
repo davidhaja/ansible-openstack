@@ -4,9 +4,9 @@
   become: yes
   apt: 
       name: "{{ item }}"
-      state: "installed"
+      state: "latest"
       update_cache: yes
-  with_items: keystone_pkgs
+  with_items: "{{ keystone_pkgs }}"
 
 - name: Copy keystone config file 
   become: yes
@@ -51,7 +51,7 @@
   become: yes
   file:
       path: "{{ default_sqlite_db }}"
-      state: absent
+      state: "absent"
 
 - name: Create admin account environment file
   template:
@@ -71,7 +71,7 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   os_project:
-      state: present
+      state: "present"
       name: "service"
       description: "Service Project"
       domain_id: "default"
@@ -87,7 +87,7 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   os_project:
-      state: present
+      state: "present"
       name: "demo"
       description: "Demo Project"
       domain_id: "default"
@@ -103,7 +103,7 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   os_user:
-      state: present
+      state: "present"
       name: "demo"
       password: "{{ demo_password }}"
       default_project: "demo"
@@ -138,42 +138,6 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   shell: "openstack role add --project demo --user demo user"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

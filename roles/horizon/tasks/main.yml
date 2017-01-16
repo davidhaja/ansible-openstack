@@ -5,7 +5,7 @@
   apt:
       name: "{{ item }}"
       state: "latest"
-  with_items: horizon_pkgs
+  with_items: "{{ horizon_pkgs }}"
 
 - name: Configure the dashboard to use controller instead localhost
   become: yes

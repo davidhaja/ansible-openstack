@@ -10,7 +10,7 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   os_user:
-      state: present
+      state: "present"
       name: "nova"
       password: "{{ nova_pass }}"
       domain: "default"
@@ -57,7 +57,7 @@
       name: "{{ item }}"
       state: "latest"
       update_cache: yes
-  with_items: nova_controller_pkgs
+  with_items: "{{ nova_controller_pkgs }}"
 
 - name: Edit the nova config file
   become: yes
@@ -75,4 +75,4 @@
   service:
       name: "{{ item }}"
       state: "restarted"
-  with_items: nova_services  
+  with_items: "{{ nova_services }}"

@@ -6,7 +6,7 @@
       name: "{{ item }}" 
       state: "installed" 
       update_cache: yes
-  with_items: mysql_pkgs
+  with_items: "{{ mysql_pkgs }}"
 
 - name: Copy openstack specific config file 
   become: yes
@@ -51,7 +51,7 @@
   mysql_db: 
       name: "{{ item.name }}" 
       state: "present"
-  with_items: mysql_db
+  with_items: "{{ mysql_db }}"
 
 - name: Create the database users
   become: yes

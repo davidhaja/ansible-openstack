@@ -6,7 +6,7 @@
       name: "{{ item }}"
       state: "latest"
       update_cache: yes
-  with_items: neutron_compute_pkgs
+  with_items: "{{ neutron_compute_pkgs }}"
 
 - name: Change neutron config file on compute node
   become: yes
@@ -47,4 +47,4 @@
   service:
       name: "{{ item}}"
       state: "restarted"
-  with_items: neutron_compute_services
+  with_items: "{{ neutron_compute_services }}"

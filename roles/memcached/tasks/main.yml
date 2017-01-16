@@ -4,9 +4,9 @@
   become: yes
   apt: 
       name: "{{ item }}" 
-      state: "installed" 
+      state: "latest" 
       update_cache: yes
-  with_items: memcached_pkgs
+  with_items: "{{ memcached_pkgs }}"
 
 - name: Change memcached conf
   become: yes

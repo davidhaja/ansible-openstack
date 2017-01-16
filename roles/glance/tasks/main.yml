@@ -10,7 +10,7 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   os_user:
-      state: present
+      state: "present"
       name: "glance"
       password: "{{ glance_pass }}"
       domain: "default"
@@ -62,7 +62,7 @@
       name: "{{ item }}"
       state: "latest"
       update_cache: yes
-  with_items: glance_pkgs
+  with_items: "{{ glance_pkgs }}"
 
 - name: Change glance-api config file
   become: yes
@@ -85,4 +85,4 @@
   service:
       name: "{{ item}}"
       state: "restarted"
-  with_items: glance_services
+  with_items: "{{ glance_services }}"

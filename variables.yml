@@ -1,0 +1,34 @@
+---
+
+admin_pass:
+demo_pass:
+
+glance_dbpass: "openstack"
+glance_pass: "openstack"
+
+keystone_dbpass: "openstack"
+
+neutron_dbpass: "openstack"
+neutron_pass: "openstack"
+metadata_secret: "openstack"
+
+nova_dbpass: "openstack"
+nova_pass: "openstack"
+
+
+hosts:
+
+management_interface_name:
+management_interface_address:
+
+public_interface_name:
+public_interface_address:
+
+rabbitmq_password: "openstack"
+rabbit_users: "openstack"
+
+#mysql_bind_address: "{{ ansible_eno2['ipv4']['address']| default('10.0.0.1') }}"
+mysql_root_db_pass: "openstack"
+
+#memcache_bind_address:
+

@@ -18,7 +18,7 @@
 - name: Apt distupgrade
   become: yes
   apt:
-      upgrade: dist
+      upgrade: "dist"
       update_cache: yes
 
 - name: Install the common packages
@@ -28,12 +28,12 @@
       state: "latest"
       update_cache: yes 
 #      upgrade: "dist"
-  with_items: common_pkgs
+  with_items: "{{ common_pkgs }}"
 
 - name: Install shade with pip
   become: yes
   pip:
-      name: shade
+      name: "shade"
 
 - name: Change hosts file
   become: yes
