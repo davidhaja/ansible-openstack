@@ -5,7 +5,7 @@ neutron_pkgs:
       - "neutron-plugin-ml2"
       # for linxubridge
       #- "neutron-linuxbridge-agent"
-      - "neutron-l3-agent "
+      - "neutron-l3-agent"
       - "neutron-dhcp-agent"
       - "neutron-metadata-agent"
       # for ovs

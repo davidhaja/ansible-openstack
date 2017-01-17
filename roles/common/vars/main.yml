@@ -2,8 +2,13 @@
 
 common_pkgs:
           - "software-properties-common"
-          - "python-openstackclient"
+          #- "python-openstackclient"
           - "python-pip"
+          - "build-essential" 
+          - "libssl-dev"
+          - "libffi-dev" 
+          - "python-dev"
+
 hosts_options: "{{ hosts }}"
 
 

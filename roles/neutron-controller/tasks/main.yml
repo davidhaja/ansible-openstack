@@ -133,13 +133,13 @@
   become: yes
   shell: "ifconfig br-ex up;ifconfig br-tun up;ifconfig br-int up;"
 
-- name: Add public interface to br-ex
-  become: yes
-  shell: "ovs-vsctl add-port br-ex {{ public_interface_name_controller }}"
+#- name: Add public interface to br-ex
+#  become: yes
+#  shell: "ovs-vsctl add-port br-ex {{ public_interface_name_controller }}"
 
 - name: Restart the Networking services
   become: yes
   service:
-      name: "{{ item}}"
+      name: "{{ item }}"
       state: "restarted"
   with_items: "{{ neutron_services }}"

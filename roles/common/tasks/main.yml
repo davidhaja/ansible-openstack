@@ -35,6 +35,11 @@
   pip:
       name: "shade"
 
+- name: Install OpenstackClient with pip
+  become: yes
+  pip:
+      name: "python-openstackclient"
+
 - name: Change hosts file
   become: yes
   template:
