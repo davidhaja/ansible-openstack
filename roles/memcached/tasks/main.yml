@@ -13,7 +13,7 @@
   lineinfile:
       dest: "{{ memcached_conf_dir}}/memcached.conf"
       regexp: "^-l 127.0.0.1"
-      line: "{{ ansible_eno2['ipv4']['address']| default('10.0.0.1') }}"
+      line: "{{ management_interface_address_controller| default('10.0.0.1') }}"
   #notify: restart memcached
 
 - name: Restart memcached service

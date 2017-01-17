@@ -62,7 +62,7 @@
       name: "{{ item }}"
       state: "latest"
       update_cache: yes
-  with_items: neutron_pkgs
+  with_items: "{{ neutron_pkgs }}"
 
 - name: Change neutron config file
   become: yes
@@ -135,10 +135,7 @@
 
 - name: Add public interface to br-ex
   become: yes
-  #for lendulet
-  shell: "ovs-vsctl add-port br-ex eno3"
-  # for taska
-  # shell: "ovs-vsctl add-port br-ex eno1"
+  shell: "ovs-vsctl add-port br-ex {{ public_interface_name_controller }}"
 
 - name: Restart the Networking services
   become: yes

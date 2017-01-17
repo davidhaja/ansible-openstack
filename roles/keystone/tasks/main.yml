@@ -105,7 +105,7 @@
   os_user:
       state: "present"
       name: "demo"
-      password: "{{ demo_password }}"
+      password: "{{ demo_pass }}"
       default_project: "demo"
       domain: "default"
       enabled: True

@@ -1,18 +1,56 @@
 ---
 
 common_pkgs:
-          - software-properties-common
-          - python-openstackclient
-          - python-pip
-hosts_options:
-          # for lendulet
-          controller: "10.0.0.7"
-          compute1: "10.0.0.1"
-          compute2: "10.0.0.6"
-          compute3: "10.0.0.11"
-          compute4: "10.0.0.12"
-          compute5: "10.0.0.4"
-          # for taska
-          #controller: "10.0.0.17"
-          #compute1: "10.0.0.15"
-          #compute2: "10.0.0.16"
+          - "software-properties-common"
+          - "python-openstackclient"
+          - "python-pip"
+hosts_options: "{{ hosts }}"
+
+
+admin_pass: "openstack"
+demo_pass: "openstack"
+
+glance_dbpass: "openstack"
+glance_pass: "openstack"
+
+keystone_dbpass: "openstack"
+
+neutron_dbpass: "openstack"
+neutron_pass: "openstack"
+metadata_secret: "openstack"
+
+nova_dbpass: "openstack"
+nova_pass: "openstack"
+
+hosts:
+    # for lendulet
+    # controller: "10.0.0.7"
+    # compute1: "10.0.0.1"
+    # compute2: "10.0.0.6"
+    # compute3: "10.0.0.11"
+    # compute4: "10.0.0.12"
+    # compute5: "10.0.0.4"
+    # for taska
+    controller: "10.0.0.17"
+    compute1: "10.0.0.15"
+    compute2: "10.0.0.16"
+
+
+management_interface_name_controller: "enp0s8"
+management_interface_address_controller: "{{ ansible_enp0s8['ipv4']['address'] }}"
+
+public_interface_name_controller: "enp0s3"
+public_interface_address_controller: "{{ ansible_enp0s3['ipv4']['address'] }}"
+
+management_interface_name_compute: "eno2"
+management_interface_address_compute: "{{ ansible_eno2['ipv4']['address'] }}"
+
+public_interface_name_compute: "eno1"
+public_interface_address_compute: "{{ ansible_eno1['ipv4']['address'] }}"
+
+
+rabbit_pass: "openstack"
+rabbit_users: "openstack"
+
+mysql_root_db_pass: "openstack"
+

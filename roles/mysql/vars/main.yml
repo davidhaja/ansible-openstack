@@ -1,17 +1,16 @@
 ---
 
 mysql_pkgs:
-      - python-pymysql
-      - mysql-server
-      - python-mysqldb
+      - "python-pymysql"
+      - "mysql-server"
+      - "python-mysqldb"
 
 mysql_service: "mysql"
 mysql_conf_dir: "/etc/mysql"
 openstack_mysql_conf_dir: "/etc/mysql/conf.d"
 
 mysql_port: 3306
-mysql_bind_address: "{{ ansible_eno2['ipv4']['address']| default('10.0.0.1') }}"
-mysql_root_db_pass: "openstack"
+mysql_bind_address: "{{ management_interface_address_controller| default('10.0.0.1') }}"
 
 mysql_db: 
       - name: "keystone"
@@ -23,19 +22,19 @@ mysql_db:
 
 mysql_users:
       - name: "keystone"
-        pass: "openstack"
+        pass: "{{ keystone_dbpass }}"
         priv: "keystone.*:ALL"
       - name: "glance"
-        pass: "openstack"
+        pass: "{{ glance_dbpass }}"
         priv: "glance.*:ALL"
       - name: "nova"
-        pass: "openstack"
+        pass: "{{ nova_dbpass }}"
         priv: "nova.*:ALL"
       - name: "nova"
-        pass: "openstack"
+        pass: "{{ nova_dbpass }}"
         priv: "nova_api.*:ALL"
       - name: "neutron"
-        pass: "openstack"
+        pass: "{{ neutron_dbpass }}"
         priv: "neutron.*:ALL"
 #      - name: "cinder"
 #        pass: "openstack"

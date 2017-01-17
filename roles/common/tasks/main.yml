@@ -25,7 +25,7 @@
   become: yes
   apt: 
       name: "{{ item }}"
-      state: "latest"
+      state: "installed"
       update_cache: yes 
 #      upgrade: "dist"
   with_items: "{{ common_pkgs }}"

@@ -12,7 +12,7 @@
   become: yes
   rabbitmq_user: 
       user: "{{ item }}" 
-      password: "{{ rabbitmq_password }}"
+      password: "{{ rabbit_pass }}"
       vhost: "/" 
       configure_priv: ".*" 
       write_priv: ".*" 

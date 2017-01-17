@@ -4,7 +4,7 @@
   become: yes
   apt: 
       name: "{{ item }}" 
-      state: "installed" 
+      state: "latest" 
       update_cache: yes
   with_items: "{{ mysql_pkgs }}"
 
@@ -36,9 +36,9 @@
       password: "{{ mysql_root_db_pass }}"
   with_items:
     - "{{ ansible_hostname }}"
-    - 127.0.0.1
-    - ::1
-    - localhost
+    - "127.0.0.1"
+    - "::1"
+    - "localhost"
 
 - name: remove the test database
   become: yes

@@ -2,13 +2,16 @@
 
 - hosts: controllers
   remote_user: ubuntu
+  vars:
+    - include_vars:
+        file: "variables.yml"
   roles:
-#    - {role: common}
-#    - {role: mysql}
-#    - {role: apache}
-#    - {role: memcached}
-#    - {role: rabbitmq}
-#    - {role: keystone}
+    - {role: common}
+    - {role: mysql}
+    - {role: apache}
+    - {role: memcached}
+    - {role: rabbitmq}
+    - {role: keystone}
     - {role: glance}
     - {role: nova-controller}
     - {role: neutron-controller}

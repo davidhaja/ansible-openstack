@@ -1,14 +1,14 @@
 ---
-keystone_dbpass: "openstack"
-admin_pass: "openstack"
 
 keystone_pkgs:
-          - keystone
+          - "keystone"
 
 keystone_service: "keystone"
 keystone_conf_dir: "/etc/keystone"
+
 apache_service: "apache2"
 apache_conf_dir: "/etc/apache2"
+
 default_sqlite_db: "/var/lib/keystone/keystone.db"
 
 config:
@@ -33,4 +33,3 @@ admin_account_env:
     OS_IDENTITY_API_VERSION: 3
     OS_IMAGE_API_VERSION: 2
 
-demo_password: "openstack"

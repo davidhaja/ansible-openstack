@@ -1,22 +1,18 @@
 ---
-nova_dbpass: "openstack"
-nova_pass: "openstack"
 
 nova_compute_pkgs:
-          - nova-compute
+          - "nova-compute"
 
 nova_compute_service: 
         - "nova-compute"
 
 nova_conf_dir: "/etc/nova"
 
-neutron_pass: "openstack"
-
 nova_compute_conf:
     DEFAULT:
-        transport_url: "rabbit://openstack:openstack@controller"
+        transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
         auth_strategy: "keystone"
-        my_ip: "{{ ansible_eno2['ipv4']['address']| default('10.0.0.2') }}"
+        my_ip: "{{ management_interface_address_compute| default('10.0.0.2') }}"
         use_neutron: True
         firewall_driver: "nova.virt.firewall.NoopFirewallDriver"
         dhcpbridge_flagfile: "/etc/nova/nova.conf"
