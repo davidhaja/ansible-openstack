@@ -2,9 +2,6 @@
 
 - hosts: controllers
   remote_user: ubuntu
-  vars:
-    - include_vars:
-        file: "variables.yml"
   roles:
     - {role: common}
     - {role: mysql}

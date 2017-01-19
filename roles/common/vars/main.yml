@@ -11,7 +11,6 @@ common_pkgs:
 
 hosts_options: "{{ hosts }}"
 
-
 admin_pass: "openstack"
 demo_pass: "openstack"
 
@@ -41,11 +40,11 @@ hosts:
     compute2: "10.0.0.16"
 
 
-management_interface_name_controller: "enp0s8"
-management_interface_address_controller: "{{ ansible_enp0s8['ipv4']['address'] }}"
+management_interface_name_controller: "eno2"
+management_interface_address_controller: "{{ ansible_eno2['ipv4']['address'] }}"
 
-public_interface_name_controller: "enp0s3"
-public_interface_address_controller: "{{ ansible_enp0s3['ipv4']['address'] }}"
+public_interface_name_controller: "eno1"
+public_interface_address_controller: "{{ ansible_eno1['ipv4']['address'] }}"
 
 management_interface_name_compute: "eno2"
 management_interface_address_compute: "{{ ansible_eno2['ipv4']['address'] }}"
