@@ -14,6 +14,18 @@
       src: "nova-compute.j2"
       dest: "{{ nova_conf_dir }}/nova.conf"
 
+#- name: Determine whether your compute node supports hardware acceleration for virtual machines
+#  shell: "egrep -c '(vmx|svm)' /proc/cpuinfo"
+#  register: hw_acc
+
+#- name: Configure libvirt to use QEMU instead of KVM.
+#  become: yes
+#  replace:
+#      dest: "{{ nova_conf_dir }}/nova-compute.conf"
+#      regexp: "virt_type=kvm"
+#      replace: "virt_type = qemu"
+#  when:  hw_acc.stdout  == 0
+
 - name: Restart nova compute service
   become: yes
   service:

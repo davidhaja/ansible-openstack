@@ -58,8 +58,8 @@
       src: "hosts.j2"
       dest: "/etc/hosts"
 
-- name: Add hostname to hosts file
-  become: yes
-  lineinfile:
-      dest: "/etc/hosts"
-      line: "{{ ansible_eno2['ipv4']['address'] }} {{ ansible_hostname }}"
+#- name: Add hostname to hosts file
+#  become: yes
+#  lineinfile:
+#      dest: "/etc/hosts"
+#      line: "{{ ansible_eno2['ipv4']['address'] }} {{ ansible_hostname }}"
