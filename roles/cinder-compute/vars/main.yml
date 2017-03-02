@@ -1,6 +1,4 @@
 ---
-cinder_dbpass: "openstack"
-cinder_pass: "openstack"
 
 cinder_compute_pkgs:
     - lvm2  
@@ -11,14 +9,13 @@ cinder_compute_services:
     - "cinder-volume"
 
 cinder_conf_dir: "/etc/cinder"
-rabbit_pass: "openstack"
 old_vg_name: "compute1-vg"
 
 cinder_compute_conf:
     DEFAULT:
         transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
         auth_strategy: "keystone"
-        my_ip: "{{ ansible_eno2['ipv4']['address'] }}"
+        my_ip: "{{ management_interface_address_compute }}"
         enabled_backends: "lvm"
         glance_api_servers: "http://controller:9292"
         rootwrap_config: "/etc/cinder/rootwrap.conf"

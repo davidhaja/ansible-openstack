@@ -7,6 +7,12 @@
       regexp: "^PasswordAuthentication no"
       replace: "PasswordAuthentication yes"
 
+- name: Restart SSH service
+  become: yes
+  service:
+      name: "ssh"
+      state: "restarted"
+
 - name: Add OpenStack repository
   become: yes
   shell: "add-apt-repository -y cloud-archive:newton"
@@ -19,14 +25,14 @@
   become: yes
   apt:
       upgrade: "dist"
-      update_cache: yes
+      update_cache: "yes"
 
 - name: Install the common packages
   become: yes
   apt: 
       name: "{{ item }}"
       state: "installed"
-      update_cache: yes 
+      update_cache: "yes" 
 #      upgrade: "dist"
   with_items: "{{ common_pkgs }}"
 

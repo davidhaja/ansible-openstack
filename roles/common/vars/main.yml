@@ -26,6 +26,9 @@ metadata_secret: "openstack"
 nova_dbpass: "openstack"
 nova_pass: "openstack"
 
+cinder_dbpass: "openstack"
+cinder_pass: "openstack"
+
 hosts:
     # for lendulet
     # controller: "10.0.0.7"
