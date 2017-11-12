@@ -15,7 +15,7 @@
 
 - name: Add OpenStack repository
   become: yes
-  shell: "add-apt-repository -y cloud-archive:newton"
+  shell: "add-apt-repository -y cloud-archive:pike"
 #  apt_repository: 
 #      repo: "cloud-archive:newton"
 #      state: present
@@ -44,13 +44,13 @@
 - name: Install OpenstackClient with pip
   become: yes
   pip:
-      name: "python-openstackclient==3.6.0"
+      name: "python-openstackclient"
 
-- name: Install novaclient v6.0
-  become: yes
-  pip:
-     name: "python-novaclient==6.0.0"
-     state: "present"
+#- name: Install novaclient v6.0
+#  become: yes
+#  pip:
+#     name: "python-novaclient==6.0.0"
+#     state: "present"
 
 - name: Change hosts file
   become: yes
@@ -58,8 +58,3 @@
       src: "hosts.j2"
       dest: "/etc/hosts"
 
-#- name: Add hostname to hosts file
-#  become: yes
-#  lineinfile:
-#      dest: "/etc/hosts"
-#      line: "{{ ansible_eno2['ipv4']['address'] }} {{ ansible_hostname }}"
