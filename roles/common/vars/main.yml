@@ -29,6 +29,8 @@ nova_pass: "openstack"
 cinder_dbpass: "openstack"
 cinder_pass: "openstack"
 
+placement_pass: "openstack"
+
 hosts:
     controller: "{{ management_interface_address_controller }}"
     "{{ ansible_hostname }}": "127.0.0.1"

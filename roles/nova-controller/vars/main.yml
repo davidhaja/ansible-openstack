@@ -6,6 +6,7 @@ nova_controller_pkgs:
           - "nova-consoleauth"
           - "nova-novncproxy" 
           - "nova-scheduler"
+          - "nova-placement-api"
 
 nova_services: 
         - "nova-consoleauth"
@@ -19,8 +20,7 @@ nova_conf_dir: "/etc/nova"
 nova_conf:
     DEFAULT:
         transport_url: "rabbit://openstack:{{ rabbit_pass }}@controller"
-        auth_strategy: "keystone"
-        my_ip: "{{ management_interface_address_controller| default('10.0.0.1') }}"
+        my_ip: "{{ management_interface_address_controller| default('10.0.0.11') }}"
         use_neutron: True
         firewall_driver: "nova.virt.firewall.NoopFirewallDriver"
         dhcpbridge_flagfile: "/etc/nova/nova.conf"
@@ -30,6 +30,8 @@ nova_conf:
         verbose: True
         ec2_private_dns_show_ip: True
         enabled_apis: "osapi_compute,metadata"
+    api:
+        auth_strategy: "keystone"
     api_database:
         connection: "mysql+pymysql://nova:{{ nova_dbpass }}@controller/nova_api"
     database:
@@ -45,6 +47,7 @@ nova_conf:
         username: "nova"
         password: "{{ nova_pass }}"
     vnc:
+        enabled: "true"
         vncserver_listen: "$my_ip"
         vncserver_proxyclient_address: "$my_ip"
     glance:
@@ -67,5 +70,16 @@ nova_conf:
         password: "{{ neutron_pass }}"
         service_metadata_proxy: True
         metadata_proxy_shared_secret: "{{ metadata_secret }}"
+    placement:
+        os_region_name: "RegionOne"
+        project_domain_name: "Default"
+        project_name: "service"
+        auth_type: "password"
+        user_domain_name: "Default"
+        auth_url: "http://controller:35357/v3"
+        username: "placement"
+        password: "{{ placement_pass }}"
+    scheduler:
+        discover_hosts_in_cells_interval: 300
 #    cinder:
 #        os_region_name: "RegionOne"

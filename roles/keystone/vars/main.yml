@@ -2,6 +2,8 @@
 
 keystone_pkgs:
           - "keystone"
+          - "apache2"
+          - "libapache2-mod-wsgi"
 
 keystone_service: "keystone"
 keystone_conf_dir: "/etc/keystone"

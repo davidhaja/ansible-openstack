@@ -114,7 +114,7 @@ dhcp_agent_conf:
 
 metadata_agent_conf:
     DEFAULT:
-        nova_metadata_ip: "controller"
+        nova_metadata_host: "controller"
         metadata_proxy_shared_secret: "{{ metadata_secret }}"
 
 ovs_agent_conf:

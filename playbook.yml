@@ -8,11 +8,12 @@
     - {role: apache}
     - {role: memcached}
     - {role: rabbitmq}
+    - {role: etcd}
     - {role: keystone}
     - {role: glance}
     - {role: nova-controller}
     - {role: neutron-controller}
-#    - {role: cinder-controller}
+    # - {role: cinder-controller}
     - {role: horizon}
 
 - hosts: computes

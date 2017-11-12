@@ -1,3 +1,71 @@
 ---
 
--name:
+- name: Create etcd group
+  become: yes
+  group:
+    name: "{{ etcd_group_name }}"
+    state: "present"
+
+- name: Create etcd user
+  become: yes
+  user:
+    name: "{{ etcd_user_name }}"
+    system: yes
+    shell: "/bin/false"
+    group: "{{ etcd_group_name }}"
+    state: "present"
+
+- name: Create /etc/etcd folder
+  become: yes
+  file:
+    path: "/etc/etcd"
+    state: "directory"
+    owner: "{{ etcd_user_name }}"
+    group: "{{ etcd_group_name }}"
+
+- name: Crate /var/lib/etcd folder
+  become: yes
+  file:
+    path: "/var/lib/etcd"
+    state: "directory"
+    owner: "{{ etcd_user_name }}"
+    group: "{{ etcd_group_name }}"
+
+- name: Delete temp/etcd datas
+  become: yes
+  shell: "rm -rf /tmp/etcd && mkdir -p /tmp/etcd"
+
+- name: Downlaod etcd v3
+  become: yes
+  environment:
+    ETCD_VER: "{{ ETCD_VER  }}"
+  shell: "curl -L https://github.com/coreos/etcd/releases/download/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz"
+
+- name: Untar downloaded file
+  become: yes
+  environment:
+    ETCD_VER: "{{ ETCD_VER  }}"
+  shell: "tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd --strip-components=1"
+
+- name: Copy etcd files
+  become: yes
+  shell: "cp /tmp/etcd/etcd /usr/bin/etcd;cp /tmp/etcd/etcdctl /usr/bin/etcdctl;"
+
+- name: Create etcd.conf.yml file
+  become: yes
+  template:
+    src: "etcd.conf.j2"
+    dest: "/etc/etcd/etcd.conf.yml"
+
+- name: Create etcd.service file
+  become: yes
+  template:
+    src: "etcd.service.j2"
+    dest: "/lib/systemd/system/etcd.service"
+
+- name: Start etcd service
+  become: yes
+  service:
+    name: "etcd"
+    enabled: "yes"
+    state: "started"

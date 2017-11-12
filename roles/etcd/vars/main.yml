@@ -1,0 +1,29 @@
+---
+
+etcd_group_name: "etcd"
+etcd_user_name: "etcd"
+ETCD_VER: "v3.2.7"
+
+etcd_conf_yml:    
+  name: "controller"
+  data-dir: "/var/lib/etcd"
+  initial-cluster-state: "'new'"
+  initial-cluster-token: "'etcd-cluster-01'"
+  initial-cluster: "controller=http://{{management_interface_address_controller}}:2380"
+  initial-advertise-peer-urls: "http://{{management_interface_address_controller}}:2380"
+  advertise-client-urls: "http://{{management_interface_address_controller}}:2379"
+  listen-peer-urls: "http://0.0.0.0:2380"
+  listen-client-urls: "http://{{management_interface_address_controller}}:2379"
+
+etcd_service:      
+  Unit:
+    After: "network.target"
+    Description: "etcd - highly-available key value store"
+  Service:
+    LimitNOFILE: 65536
+    Restart: "on-failure"
+    Type: "notify"
+    ExecStart: "/usr/bin/etcd --config-file /etc/etcd/etcd.conf.yml"
+    User: "{{etcd_user_name}}"
+  Install:
+    WantedBy: "multi-user.target"

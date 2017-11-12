@@ -16,6 +16,22 @@
       domain: "default"
       enabled: True
 
+- name: Create placement user
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  os_user:
+      state: "present"
+      name: "placement"
+      password: "{{ placement_pass }}"
+      domain: "default"
+      enabled: True
+
 - name: Add the admin role to the nova user and service project
   environment:
       OS_USERNAME: "admin"
@@ -27,6 +43,17 @@
       OS_IDENTITY_API_VERSION: 3
   shell: "openstack role add --project service --user nova admin"
 
+- name: Add the admin role to the placement user and service project
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack role add --project service --user placement admin"
+
 - name: Create the nova service entity
   environment:
       OS_USERNAME: "admin"
@@ -37,6 +64,17 @@
       OS_AUTH_URL: "http://controller:35357/v3"
       OS_IDENTITY_API_VERSION: 3
   shell: 'openstack service create --name nova --description "OpenStack Compute" compute'
+
+- name: Create the placement service entity
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: 'openstack service create --name placement --description "Placement API" placement'
 
 - name: Create the Compute service API endpoints
   environment:
@@ -50,6 +88,19 @@
   shell: "openstack endpoint create --region RegionOne compute public http://controller:8774/v2.1/%\\(tenant_id\\)s; \ 
           openstack endpoint create --region RegionOne compute internal http://controller:8774/v2.1/%\\(tenant_id\\)s; \ 
           openstack endpoint create --region RegionOne compute admin http://controller:8774/v2.1/%\\(tenant_id\\)s;"
+
+- name: Create the Placement API service endpoints
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: "openstack endpoint create --region RegionOne placement public http://controller:8778; \ 
+          openstack endpoint create --region RegionOne placement internal http://controller:8778; \ 
+          openstack endpoint create --region RegionOne placement admin http://controller:8778;"
 
 - name: Install nova packages
   become: yes
@@ -67,7 +118,9 @@
 
 - name: Populate the Compute databases
   become: yes
-  shell: 'su -s /bin/sh -c "nova-manage api_db sync" nova; \ 
+  shell: 'su -s /bin/sh -c "nova-manage api_db sync" nova; \
+          su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova; \
+          su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova; \ 
           su -s /bin/sh -c "nova-manage db sync" nova; '
 
 - name: Restart nova services

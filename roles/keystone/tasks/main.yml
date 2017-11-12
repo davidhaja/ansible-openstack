@@ -139,6 +139,3 @@
       OS_IDENTITY_API_VERSION: 3
   shell: "openstack role add --project demo --user demo user"
 
-
-
-
