@@ -33,7 +33,7 @@
   mysql_user: 
       name: "root" 
       host: "{{ item }}"
-      password: "{{ mysql_root_db_pass }}"
+      login_password: "{{ mysql_root_db_pass }}"
   with_items:
     - "{{ ansible_hostname }}"
     - "127.0.0.1"
@@ -45,12 +45,14 @@
   mysql_db: 
       name: "test" 
       state: "absent"
+      login_password: "{{ mysql_root_db_pass }}"
 
 - name: Create the database
   become: yes
   mysql_db: 
       name: "{{ item.name }}" 
       state: "present"
+      login_password: "{{ mysql_root_db_pass }}"
   with_items: "{{ mysql_db }}"
 
 - name: Create the database users
@@ -62,6 +64,7 @@
       state: "present" 
       host: "{{ item[1] }}"
       append_privs: "yes"
+      login_password: "{{ mysql_root_db_pass }}"
   with_nested: 
     - "{{ mysql_users }}"
     - ['localhost' , '%']
