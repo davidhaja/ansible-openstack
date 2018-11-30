@@ -8,6 +8,12 @@
       update_cache: yes
   with_items: "{{ rabbitmq_pkgs }}"
 
+- name: Restart rabbitmq
+  become: yes
+  service:
+      name: "rabbitmq-server"
+      state: "restarted"
+
 - name: Add users
   become: yes
   rabbitmq_user: 

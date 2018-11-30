@@ -110,6 +110,12 @@
   become: yes
   shell: 'su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron'
 
+- name: Restart OVS service
+  become: yes
+  service:
+      name: "openvswitch-switch"
+      state: "restarted"
+
 - name: Add br-int to controller
   become: yes
   openvswitch_bridge:
