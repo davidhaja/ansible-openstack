@@ -4,7 +4,7 @@ This repo contains an Ansible play, which install and configure OpenStack Newton
 
 On each server you must have Python 2.4 or later. If you not sure about your Python version type the following command.
 ```
-sudo apt-get update;sudo apt-get install -y python ssh;
+sudo apt-get update;sudo apt-get install -y python ssh software-properties-common;
 ```
 You have to enable sudo without password on hosts. <br />
 For this insert a line to /etc/sudoers like: 

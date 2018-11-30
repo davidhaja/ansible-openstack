@@ -59,3 +59,6 @@
       src: "hosts.j2"
       dest: "/etc/hosts"
 
+- name: This makes OVS works in container
+  become: yes
+  shell: "echo exit 0 > /usr/sbin/policy-rc.d"
