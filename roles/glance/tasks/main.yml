@@ -86,3 +86,19 @@
       name: "{{ item}}"
       state: "restarted"
   with_items: "{{ glance_services }}"
+
+- name: Get cirros image
+  get_url:
+      url: http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
+      dest: "/home/ubuntu/cirros-0.3.5-x86_64-disk.img"
+
+- name: Add cirros image to Openstack
+  environment:
+      OS_USERNAME: "admin"
+      OS_PASSWORD: "{{ admin_pass }}"
+      OS_PROJECT_NAME: "admin"
+      OS_USER_DOMAIN_NAME: "Default"
+      OS_PROJECT_DOMAIN_NAME: "Default"
+      OS_AUTH_URL: "http://controller:35357/v3"
+      OS_IDENTITY_API_VERSION: 3
+  shell: 'openstack image create "cirros" --file cirros-0.3.5-x86_64-disk.img --disk-format qcow2 --container-format bare --public'
