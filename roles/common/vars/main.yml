@@ -35,17 +35,18 @@ hosts:
     controller: "{{ management_interface_address_controller }}"
     "{{ ansible_hostname }}": "127.0.0.1"
 
-management_interface_name_controller: "enp0s8"
-management_interface_address_controller: "{{ ansible_enp0s8['ipv4']['address'] }}"
+management_interface_name_controller: "eth0"
+#management_interface_address_controller: "{{ ansible_eth0['ipv4']['address'] }}"
+management_interface_address_controller: "172.18.0.2"
 
-public_interface_name_controller: "enp0s3"
-public_interface_address_controller: "{{ ansible_enp0s3['ipv4']['address'] }}"
+public_interface_name_controller: "eth0"
+public_interface_address_controller: "{{ ansible_eth0['ipv4']['address'] }}"
 
-management_interface_name_compute: "enp0s8"
-management_interface_address_compute: "{{ ansible_enp0s8['ipv4']['address'] }}"
+management_interface_name_compute: "eth0"
+management_interface_address_compute: "{{ ansible_eth0['ipv4']['address'] }}"
 
-public_interface_name_compute: "enp0s3"
-public_interface_address_compute: "{{ ansible_enp0s3['ipv4']['address'] }}"
+public_interface_name_compute: "eth0"
+public_interface_address_compute: "{{ ansible_eth0['ipv4']['address'] }}"
 
 
 rabbit_pass: "openstack"
@@ -53,3 +54,4 @@ rabbit_users: "openstack"
 
 mysql_root_db_pass: "openstack"
 
+fake: False

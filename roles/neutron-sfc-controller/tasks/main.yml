@@ -1,0 +1,56 @@
+---
+
+- name: Install neutron SFC requirements
+  shell: "pip install -c https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=stable/pike networking-sfc==5.0.0"
+
+- name: Clone neutron SFC
+  git:
+      repo: "https://github.com/openstack/networking-sfc.git"
+      dest: "/home/ubuntu/networking-sfc"
+      version: "stable/pike"
+
+- name: Install neutron SFC
+  become: yes
+  shell:
+      cmd: "python setup.py install"
+      chdir: "/home/ubuntu/networking-sfc"
+
+- name: Modify neuron conf properties with SFC values
+  become: yes
+  lineinfile:
+      dest: "{{ neutron_conf_dir }}/neutron.conf"
+      regexp: "^service_plugins = .*"
+      line: "service_plugins=router,networking_sfc.services.flowclassifier.plugin.FlowClassifierPlugin,networking_sfc.services.sfc.plugin.SfcPlugin"
+
+- name: Append SFC values to neutron conf file
+  become: yes
+  blockinfile:
+      dest: "{{ neutron_conf_dir }}/neutron.conf"
+      block: |
+        [sfc]
+        drivers = dummy
+        [flowclassifier]
+        drivers = dummy
+  when: fake == True
+
+- name: Append SFC values to neutron conf file
+  become: yes
+  blockinfile:
+      dest: "{{ neutron_conf_dir }}/neutron.conf"
+      block: |
+        [sfc]
+        drivers = ovs
+        [flowclassifier]
+        drivers = ovs
+  when: fake == False
+
+- name: Restart the Networking services
+  become: yes
+  service:
+      name: "{{ item }}"
+      state: "restarted"
+  with_items: "{{ neutron_services }}"
+
+- name: Upgrade neutron database
+  become: yes
+  shell: "neutron-db-manage --subproject networking-sfc upgrade head"

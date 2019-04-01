@@ -14,6 +14,14 @@
       src: "nova-compute.j2"
       dest: "{{ nova_conf_dir }}/nova.conf"
 
+- name: Enable fake driver
+  become: yes
+  lineinfile:
+      dest: "{{ nova_conf_dir }}/nova-compute.conf"
+      regexp: "^compute_driver*"
+      line: "compute_driver=fake.FakeDriver"
+  when: fake == True
+
 #- name: Determine whether your compute node supports hardware acceleration for virtual machines
 #  shell: "egrep -c '(vmx|svm)' /proc/cpuinfo"
 #  register: hw_acc

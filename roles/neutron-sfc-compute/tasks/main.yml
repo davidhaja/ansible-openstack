@@ -1,0 +1,30 @@
+---
+
+- name: Install neutron SFC requirements
+  shell: "pip install -c https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=stable/pike networking-sfc==5.0.0"
+
+- name: Clone neutron SFC
+  git:
+      repo: "https://github.com/openstack/networking-sfc.git"
+      dest: "/home/ubuntu/networking-sfc"
+      version: "stable/pike"
+
+- name: Install neutron SFC
+  become: yes
+  shell:
+      cmd: "python setup.py install"
+      chdir: "/home/ubuntu/networking-sfc"
+
+- name: Append SFC value to neutron openvswitch agent conf
+  become: yes
+  lineinfile:
+      dest: "{{ ml2_plugin_conf_dir }}/openvswitch_agent.ini"
+      insertafter: '\[agent\]'
+      line: "extensions = sfc"
+
+- name: Restart the Networking services on compute node
+  become: yes
+  service:
+      name: "{{ item}}"
+      state: "restarted"
+  with_items: "{{ neutron_compute_services }}"

@@ -1,17 +1,17 @@
 ---
 
-- name: Enable SSH password authentication
-  become: yes
-  replace:
-      dest: "/etc/ssh/sshd_config"
-      regexp: "^PasswordAuthentication no"
-      replace: "PasswordAuthentication yes"
+#- name: Enable SSH password authentication
+#  become: yes
+#  replace:
+#      dest: "/etc/ssh/sshd_config"
+#      regexp: "^PasswordAuthentication no"
+#      replace: "PasswordAuthentication yes"
 
-- name: Restart SSH service
-  become: yes
-  service:
-      name: "ssh"
-      state: "restarted"
+#- name: Restart SSH service
+#  become: yes
+#  service:
+#      name: "ssh"
+#      state: "restarted"
 
 - name: Add OpenStack repository
   become: yes
@@ -53,12 +53,20 @@
 #     name: "python-novaclient==6.0.0"
 #     state: "present"
 
-- name: Change hosts file
+#- name: Change hosts file
+#  become: yes
+#  template:
+#      src: "hosts.j2"
+#      dest: "/etc/hosts"
+
+- name: Add controller to hosts file
   become: yes
-  template:
-      src: "hosts.j2"
-      dest: "/etc/hosts"
+  shell: 'echo "{{ management_interface_address_controller }} controller" >> /etc/hosts'
+#  lineinfile:
+#      dest: "/etc/hosts"
+#      line: "{{ management_interface_address_controller }} controller"
 
 - name: This makes OVS works in container
   become: yes
   shell: "echo exit 0 > /usr/sbin/policy-rc.d"
+  when: fake == True
