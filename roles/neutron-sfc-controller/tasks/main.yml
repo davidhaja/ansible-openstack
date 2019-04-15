@@ -1,6 +1,7 @@
 ---
 
 - name: Install neutron SFC requirements
+  become: yes
   shell: "pip install -c https://git.openstack.org/cgit/openstack/requirements/plain/upper-constraints.txt?h=stable/pike networking-sfc==5.0.0"
 
 - name: Clone neutron SFC
