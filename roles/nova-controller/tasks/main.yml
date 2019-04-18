@@ -110,11 +110,11 @@
       update_cache: yes
   with_items: "{{ nova_controller_pkgs }}"
 
-- name: Install upper-constraint version of oslo.db with pip
-  become: yes
-  pip:
-      name: "oslo.db"
-      version: 4.25.1
+#- name: Install upper-constraint version of oslo.db with pip
+#  become: yes
+#  pip:
+#      name: "oslo.db"
+#      version: 4.25.1
 
 - name: Edit the nova config file
   become: yes
